@@ -13,7 +13,7 @@ from selenium import webdriver
 chromedriver_autoinstaller.install()
 
 class Screenshot:
-    def __init__(self, *, driver=None, size={"width": 1920, "height": 1200}, scale_factor=1, dark_mode=False, wait_time=10, freeze_page=False):
+    def __init__(self, *, driver=None, size={"width": 1920, "height": 1200}, scale_factor=1, dark_mode=False, wait_time=60, freeze_page=False):
         # init driven if not provided
         if driver is None:
             options = ChromeOptions()
@@ -25,6 +25,11 @@ class Screenshot:
             options.add_argument('--high-dpi-support=1')
             options.add_argument('--disable-gpu')
             options.add_argument(f'--force-device-scale-factor={scale_factor}')
+            options.add_argument('--disable-site-isolation-trials')
+            options.page_load_strategy = "none"
+            experimentalFlags = ['calculate-native-win-occlusion@2']
+            chromeLocalStatePrefs = { 'browser.enabled_labs_experiments' : experimentalFlags}
+            options.add_experimental_option('localState',chromeLocalStatePrefs)
             driver = webdriver.Chrome(options=options)
 
         # setup color scheme
@@ -45,8 +50,8 @@ class Screenshot:
 
     def _open(self, url):
 
-        self.driver.set_page_load_timeout(60)
-        self.driver.set_script_timeout(60)
+        self.driver.set_page_load_timeout(self.wait_time)
+        self.driver.set_script_timeout(self.wait_time)
 
         # Openning a website
         self.driver.get(url)
@@ -102,9 +107,12 @@ class Screenshot:
         self.driver.execute_script(f"innerHeight = -99999")
         self.driver.execute_script(f"window.scrollTo(0, {max_page_height});")
         time.sleep(4)
+        self.driver.execute_script(f"window.scrollBy(0, -48)")
+        time.sleep(1)
+
 
         # Removing all event listeners to turn off any scroll animations
-        self._remove_scroll_listeners()
+        self._remove_scroll_listeners() ########################################
         time.sleep(4)
 
         # Scrolling to the bottom
@@ -116,6 +124,7 @@ class Screenshot:
             self._freeze_units()
         
         # Setting the window size equal to page size
+        max_page_height = max(self.size['height'], self.driver.execute_script("return document.body.scrollHeight;"))
         self.driver.set_window_size(window_width, max_page_height)
 
         # Waiting to everything to end
@@ -153,17 +162,9 @@ class Screenshot:
 
 if __name__ == '__main__':
     # url to test
-    url = 'https://cubist.dev/'
+    url = 'https://insomnia.rest/changelog'
 
-    # sc_chrome = Screenshot(size={'width': 1920, 'height': 1200}, scale_factor=1)
-    # sc_chrome.get_fullpage_screenshot_as_file(url, 'test_ch.png')
-    # print('chrome done')
-
-    # sc_chrome_scaled = Screenshot(size={'width': 1920, 'height': 1200}, scale_factor=2)
-    # sc_chrome_scaled.get_fullpage_screenshot_as_file(url, 'test_ch_sc.png')
-    # print('chrome scaled done')
-
-    sc_chrome_freezed = Screenshot(size={'width': 1920, 'height': 1200}, scale_factor=2, freeze_page=True)
+    sc_chrome_freezed = Screenshot(size={'width': 1920, 'height': 1200}, scale_factor=2, freeze_page=True, wait_time=300)
     sc_chrome_freezed.get_fullpage_screenshot_as_file(url, 'test' + str(time.time()) + '.png')
     print('chrome scaled fixed done')
     del sc_chrome_freezed
