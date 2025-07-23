@@ -16,13 +16,13 @@ Automated Python CLI tool for capturing full-height screenshots of complex web p
 
 ### Core Components
 
-**`main.py`** - Entry point that processes URLs from `links.txt`, handles errors, and saves screenshots to `images/` directory.
+- **`main.py`** - Entry point that processes URLs from `links.txt`, handles errors, and saves screenshots to `images/` directory.
 
-**`screenshot.py`** - Main Screenshot class using headless Chrome with optimized settings for capture.
+- **`screenshot.py`** - Main Screenshot class using headless Chrome with optimized settings for capture.
 
-**`freeze_units.js`** - JavaScript that locks all DOM elements to current dimensions and hides cookie banners.
+- **`freeze_units.js`** - JavaScript that locks all DOM elements to current dimensions and hides cookie banners.
 
-**`remove_scroll_listeners.js`** - Removes scroll and wheel event listeners to prevent animations during capture.
+- **`remove_scroll_listeners.js`** - Removes scroll and wheel event listeners to prevent animations during capture.
 
 ### Process Flow
 
