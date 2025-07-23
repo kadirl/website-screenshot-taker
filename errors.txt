@@ -1,4 +1,1 @@
-https://rubyonrails.org/category/news
-https://www.gitpod.io/changelog
-https://insomnia.rest/changelog
-https://docs.cypress.io/guides/references/changelog
+https://www.example.com
